@@ -1,0 +1,48 @@
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  unit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - run: uv sync
+      - run: uv run ruff check .
+      - run: uv run pytest -q
+
+  agent-evals:
+    # Regression gate: a prompt/model/tool change that drops F1 below the bar fails the PR.
+    needs: unit
+    runs-on: ubuntu-latest
+    env:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      LANGSMITH_TRACING: ${{ secrets.LANGSMITH_API_KEY != '' }}
+      LANGSMITH_API_KEY: ${{ secrets.LANGSMITH_API_KEY }}
+      LANGSMITH_PROJECT: fraud-investigator-ci
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - run: uv sync
+      - name: Start stores
+        run: docker compose up -d --wait postgres neo4j redis
+      - name: Build deterministic dataset
+        run: |
+          uv run python -m fraud_agent.detector.train --test-n 5000
+          uv run python -m fraud_agent.generator.producer --seed-db
+          uv run python -m fraud_agent.detector.backfill --count 20000
+          uv run python -m fraud_agent.tools.retrieval --ingest
+          uv run python -m evals.build_dataset
+      - name: Run agent evals
+        if: env.ANTHROPIC_API_KEY != ''
+        run: uv run python -m evals.run_evals --limit 15 --min-f1 0.75
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eval-results
+          path: evals/results/

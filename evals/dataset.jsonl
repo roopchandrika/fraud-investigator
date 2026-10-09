@@ -1,0 +1,50 @@
+{"txn_id": "TXB27CA2D27735", "label_is_fraud": true, "label_pattern": "account_takeover", "detector_reasons": ["takeover signals: new device + new city + amount far above normal", "isolation-forest outlier (decision=-0.101)"]}
+{"txn_id": "TXD664F233F310", "label_is_fraud": true, "label_pattern": "account_takeover", "detector_reasons": ["amount 19.9x payer's average", "isolation-forest outlier (decision=-0.078)"]}
+{"txn_id": "TXA92177D75598", "label_is_fraud": true, "label_pattern": "account_takeover", "detector_reasons": ["takeover signals: new device + new city + amount far above normal", "amount 8.6x payer's average", "isolation-forest outlier (decision=-0.118)"]}
+{"txn_id": "TX0B3401B59795", "label_is_fraud": true, "label_pattern": "account_takeover", "detector_reasons": ["takeover signals: new device + new city + amount far above normal", "amount 19.7x payer's average", "isolation-forest outlier (decision=-0.123)"]}
+{"txn_id": "TXD6CB94627EB6", "label_is_fraud": true, "label_pattern": "account_takeover", "detector_reasons": ["takeover signals: new device + new city + amount far above normal", "amount 19.8x payer's average", "isolation-forest outlier (decision=-0.124)"]}
+{"txn_id": "TX2D63D31830FF", "label_is_fraud": true, "label_pattern": "account_takeover", "detector_reasons": ["takeover signals: new device + new city + amount far above normal", "amount 14.4x payer's average", "isolation-forest outlier (decision=-0.126)"]}
+{"txn_id": "TX5AD36524F266", "label_is_fraud": true, "label_pattern": "account_takeover", "detector_reasons": ["takeover signals: new device + new city + amount far above normal", "amount 13.9x payer's average", "isolation-forest outlier (decision=-0.130)"]}
+{"txn_id": "TX4C90A40446B5", "label_is_fraud": true, "label_pattern": "account_takeover", "detector_reasons": ["amount 8.6x payer's average", "isolation-forest outlier (decision=-0.054)"]}
+{"txn_id": "TX4D824021B4DA", "label_is_fraud": true, "label_pattern": "merchant_collusion", "detector_reasons": ["fan-in: payee received from 5 payers in 30 min (round amounts)"]}
+{"txn_id": "TX110A3688AE1C", "label_is_fraud": true, "label_pattern": "merchant_collusion", "detector_reasons": ["fan-in: payee received from 7 payers in 30 min (round amounts)"]}
+{"txn_id": "TX6C1AEDA62BC5", "label_is_fraud": true, "label_pattern": "merchant_collusion", "detector_reasons": ["fan-in: payee received from 6 payers in 30 min (round amounts)"]}
+{"txn_id": "TXB02D96F485D1", "label_is_fraud": true, "label_pattern": "merchant_collusion", "detector_reasons": ["fan-in: payee received from 6 payers in 30 min (round amounts)"]}
+{"txn_id": "TX92F249666561", "label_is_fraud": true, "label_pattern": "merchant_collusion", "detector_reasons": ["fan-in: payee received from 5 payers in 30 min (round amounts)"]}
+{"txn_id": "TXDFAB39FF4313", "label_is_fraud": true, "label_pattern": "merchant_collusion", "detector_reasons": ["fan-in: payee received from 5 payers in 30 min (round amounts)"]}
+{"txn_id": "TXC137B5A9F03D", "label_is_fraud": true, "label_pattern": "merchant_collusion", "detector_reasons": ["fan-in: payee received from 5 payers in 30 min (round amounts)"]}
+{"txn_id": "TXF68AA3C27EFC", "label_is_fraud": true, "label_pattern": "merchant_collusion", "detector_reasons": ["fan-in: payee received from 6 payers in 30 min (round amounts)"]}
+{"txn_id": "TXAB70DD205B4C", "label_is_fraud": true, "label_pattern": "mule_chain", "detector_reasons": ["pass-through: forwards 96% of funds received in last 20 min"]}
+{"txn_id": "TX87A66BBDBA2E", "label_is_fraud": true, "label_pattern": "mule_chain", "detector_reasons": ["takeover signals: new device + new city + amount far above normal", "amount 24.3x payer's average", "isolation-forest outlier (decision=-0.121)"]}
+{"txn_id": "TXCE3B01C41543", "label_is_fraud": true, "label_pattern": "mule_chain", "detector_reasons": ["pass-through: forwards 99% of funds received in last 20 min"]}
+{"txn_id": "TX645C379FCC51", "label_is_fraud": true, "label_pattern": "mule_chain", "detector_reasons": ["pass-through: forwards 99% of funds received in last 20 min"]}
+{"txn_id": "TX0B1502105951", "label_is_fraud": true, "label_pattern": "mule_chain", "detector_reasons": ["pass-through: forwards 83% of funds received in last 20 min"]}
+{"txn_id": "TX45196F43EDAD", "label_is_fraud": true, "label_pattern": "mule_chain", "detector_reasons": ["amount 27.3x payer's average", "isolation-forest outlier (decision=-0.127)"]}
+{"txn_id": "TX992AF0079CB1", "label_is_fraud": true, "label_pattern": "mule_chain", "detector_reasons": ["pass-through: forwards 98% of funds received in last 20 min"]}
+{"txn_id": "TXA22559A0D2A9", "label_is_fraud": true, "label_pattern": "mule_chain", "detector_reasons": ["pass-through: forwards 96% of funds received in last 20 min"]}
+{"txn_id": "TX478593D75AEC", "label_is_fraud": false, "label_pattern": "none", "detector_reasons": ["amount 11.1x payer's average"]}
+{"txn_id": "TX4E1BC3C9F55D", "label_is_fraud": false, "label_pattern": "none", "detector_reasons": ["amount 10.5x payer's average"]}
+{"txn_id": "TX1EA970726E23", "label_is_fraud": false, "label_pattern": "none", "detector_reasons": ["amount 9.0x payer's average", "isolation-forest outlier (decision=-0.067)"]}
+{"txn_id": "TX361178BFE76D", "label_is_fraud": false, "label_pattern": "none", "detector_reasons": ["amount 8.8x payer's average"]}
+{"txn_id": "TXF6423A6347BA", "label_is_fraud": false, "label_pattern": "none", "detector_reasons": ["amount 8.3x payer's average", "isolation-forest outlier (decision=-0.091)"]}
+{"txn_id": "TX6BD6C3581C1F", "label_is_fraud": false, "label_pattern": "none", "detector_reasons": ["amount 9.8x payer's average"]}
+{"txn_id": "TX163EA45E91C5", "label_is_fraud": false, "label_pattern": "none", "detector_reasons": ["amount 9.1x payer's average"]}
+{"txn_id": "TXD23307331C89", "label_is_fraud": false, "label_pattern": "none", "detector_reasons": ["amount 9.6x payer's average"]}
+{"txn_id": "TXEC814026D0D2", "label_is_fraud": false, "label_pattern": "none", "detector_reasons": ["amount 9.5x payer's average"]}
+{"txn_id": "TX31313073BFE0", "label_is_fraud": false, "label_pattern": "none", "detector_reasons": ["amount 10.0x payer's average", "pass-through: forwards 89% of funds received in last 20 min", "isolation-forest outlier (decision=-0.104)"]}
+{"txn_id": "TXDCB49C4CC066", "label_is_fraud": false, "label_pattern": "none", "detector_reasons": ["amount 10.1x payer's average", "isolation-forest outlier (decision=-0.071)"]}
+{"txn_id": "TX498C41640CC6", "label_is_fraud": false, "label_pattern": "none", "detector_reasons": ["amount 8.8x payer's average"]}
+{"txn_id": "TX6B0D34F1D02B", "label_is_fraud": false, "label_pattern": "none", "detector_reasons": ["amount 9.6x payer's average"]}
+{"txn_id": "TXC2040AD51136", "label_is_fraud": false, "label_pattern": "none", "detector_reasons": ["amount 11.1x payer's average"]}
+{"txn_id": "TX9431AE5C857F", "label_is_fraud": false, "label_pattern": "none", "detector_reasons": ["amount 9.9x payer's average"]}
+{"txn_id": "TXC56572395ECD", "label_is_fraud": false, "label_pattern": "none", "detector_reasons": ["fan-out: 5 distinct payees in 10 min"]}
+{"txn_id": "TX903FFA694528", "label_is_fraud": false, "label_pattern": "none", "detector_reasons": ["isolation-forest outlier (decision=-0.053)"]}
+{"txn_id": "TXECE134B454CE", "label_is_fraud": false, "label_pattern": "none", "detector_reasons": ["amount 10.6x payer's average"]}
+{"txn_id": "TXCCC8A535ED92", "label_is_fraud": true, "label_pattern": "velocity_burst", "detector_reasons": ["velocity: 9 payments by payer in 5 min", "isolation-forest outlier (decision=-0.058)"]}
+{"txn_id": "TXC41F14514490", "label_is_fraud": true, "label_pattern": "velocity_burst", "detector_reasons": ["velocity: 14 payments by payer in 5 min", "fan-out: 7 distinct payees in 10 min", "isolation-forest outlier (decision=-0.053)"]}
+{"txn_id": "TXF83D27FEDEE7", "label_is_fraud": true, "label_pattern": "velocity_burst", "detector_reasons": ["isolation-forest outlier (decision=-0.064)"]}
+{"txn_id": "TXD6BFD560E27B", "label_is_fraud": true, "label_pattern": "velocity_burst", "detector_reasons": ["velocity: 14 payments by payer in 5 min"]}
+{"txn_id": "TX89BED80A7C3B", "label_is_fraud": true, "label_pattern": "velocity_burst", "detector_reasons": ["velocity: 16 payments by payer in 5 min"]}
+{"txn_id": "TX0FFA4842604C", "label_is_fraud": true, "label_pattern": "velocity_burst", "detector_reasons": ["velocity: 13 payments by payer in 5 min"]}
+{"txn_id": "TXB6EB2FD16D1B", "label_is_fraud": true, "label_pattern": "velocity_burst", "detector_reasons": ["velocity: 15 payments by payer in 5 min"]}
+{"txn_id": "TX0FBE64044A3A", "label_is_fraud": true, "label_pattern": "velocity_burst", "detector_reasons": ["velocity: 10 payments by payer in 5 min"]}
