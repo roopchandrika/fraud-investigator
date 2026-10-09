@@ -6,3 +6,4 @@ models/*.joblib
 evals/results/
 .pytest_cache/
 .ruff_cache/
+*.local.md

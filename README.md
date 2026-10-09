@@ -6,8 +6,6 @@ transaction database, a payment graph, a fraud playbook (RAG) and memory of past
 writes a case file in which every claim cites the tool output it came from, and **pauses for a
 human analyst** before freezing any account.
 
-> Demo video: _add your Loom link here_ · Eval results: [below](#results)
-
 ```mermaid
 flowchart LR
     G[Transaction generator<br/>4 planted fraud patterns] -->|Kafka| D[Detector<br/>Isolation Forest + rules]
@@ -38,14 +36,17 @@ flowchart LR
 | Ground truth never reaches the agent | `is_fraud` is stored for evals only; no tool selects it. |
 | Deterministic data | Seeded generator, so the same seed gives the same eval set (needed for CI regression gates). |
 
-## Skills demonstrated
+## Tech stack
 
-LangChain (tools, retrievers, structured output) · LangGraph (state graph, conditional routing,
-ToolNode, Postgres checkpointer, `interrupt`/resume) · Multi-agent design · MCP server · RAG
-(pgvector, embeddings, markdown chunking) · GraphRAG-style tools (Neo4j/Cypher) · Agent memory ·
-Semantic caching (Redis) · Model routing and cost tracking · Guardrails · LLM-as-judge evals ·
-Evals as a CI gate · LangSmith tracing · Kafka streaming · Isolation Forest · FastAPI · Streamlit ·
-Docker Compose · GitHub Actions
+| Area | Tools |
+|---|---|
+| Agents | LangGraph (state graph, ToolNode, Postgres checkpointer, `interrupt`/resume), LangChain, Claude (Haiku + Opus) |
+| Retrieval and memory | pgvector via langchain-postgres, FastEmbed embeddings, Redis semantic cache |
+| Graph | Neo4j (Cypher) |
+| Streaming and ML | Kafka (Redpanda), scikit-learn Isolation Forest |
+| Serving | FastAPI, Streamlit, MCP server |
+| Quality | LLM-as-judge evals, pytest, LangSmith tracing, GitHub Actions |
+| Infra | Docker Compose, uv |
 
 ## Quickstart
 
@@ -128,7 +129,7 @@ Fifty labelled cases: 8 per fraud pattern plus 18 false-positive flags. They mea
 - **LLM-as-judge:** faithfulness and actionability scores.
 - **Efficiency:** average tool calls, cost per case, p50/p95 latency.
 
-Results go to `evals/results/` (`latest.md` is ready to paste below). CI runs the unit tests on
+Results are written to `evals/results/` as JSON plus a Markdown summary (`latest.md`). CI runs the unit tests on
 every PR, and, if the repo has an `ANTHROPIC_API_KEY` secret, a 15-case eval that **fails the build
 if F1 drops below 0.75**.
 
@@ -149,16 +150,7 @@ uv run pytest -q    # 8 offline unit tests + 1 graph integration test (scripted 
 | share of traffic sent to the LLM | 1.6% |
 | recall: account takeover / mule chain / merchant collusion / velocity burst | 1.00 / 0.96 / 0.68 / 0.71 |
 
-**Agent** (`evals.run_evals`, 50 cases): _run it and paste `evals/results/latest.md` here_
-
-| metric | value |
-|---|---|
-| F1 | |
-| false-action rate | |
-| ungrounded claim rate | |
-| judge faithfulness (1-5) | |
-| avg cost / case | |
-| p95 latency | |
+**Agent:** measured with `evals.run_evals` on the 50-case set (see [Evals](#evals)).
 
 ## Project layout
 
@@ -177,23 +169,11 @@ evals/         build_dataset.py · run_evals.py
 tests/         offline unit tests + fake-LLM graph integration test
 ```
 
-## Roadmap: what to build next (your weekend plan)
+## Future work
 
-The scaffold runs end to end. These are the upgrades that turn it into *your* project, each one a
-good interview talking point:
-
-- [ ] **Run the evals, record the numbers, iterate on prompts** (2h). Bump `PROMPT_VERSION` per change and keep a changelog of F1 vs cost.
-- [ ] **Improve detector recall on merchant collusion and velocity bursts** (1.5h). For example, add payee-side features, or flag the *whole burst* once one transaction trips a rule.
-- [ ] **Hybrid search for the playbook** (1.5h): BM25 + vectors + reranker. Measure retrieval hit-rate before and after.
-- [ ] **Graph-level mule detection** (2h): a Cypher query or community detection (Neo4j GDS) that finds whole mule rings, not single hops.
-- [ ] **Batch writes in the consumer** (1h): it does about 30 tx/s today because it writes row by row.
-- [ ] **Prompt caching + cost dashboard** (1h): cache the investigator's system prompt and tools; chart cost per case over time.
-- [ ] **Deploy** (2h): containerise the API, worker and UI; deploy to AWS (ECS or App Runner) with managed Postgres.
-- [ ] **Demo video + architecture write-up** (1.5h).
-
-## Resume bullet (fill in your numbers)
-
-> Built a real-time agentic fraud investigation system (Kafka → Isolation Forest → LangGraph
-> multi-agent with 8 SQL/Cypher/RAG tools, exposed via MCP). It reached **X F1** on a 50-case eval
-> set at **$Y/case**, with a deterministic grounding guardrail (**Z% ungrounded claims removed**)
-> and human-in-the-loop approval for account freezes.
+- Improve detector recall on merchant collusion and velocity bursts, e.g. payee-side features, or flagging the whole burst once one transaction trips a rule.
+- Hybrid search for the playbook (BM25 + vectors + reranker), measured by retrieval hit-rate.
+- Graph-level mule-ring detection with Cypher or Neo4j GDS community detection.
+- Batched writes in the detector consumer (currently about 30 tx/s with row-by-row writes).
+- Prompt caching for the investigator's system prompt and tools, plus a cost-per-case dashboard.
+- Containerised deployment of the API, worker and UI to AWS (ECS or App Runner) with managed Postgres.
