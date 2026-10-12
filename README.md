@@ -141,35 +141,42 @@ uv run pytest -q    # 8 offline unit tests + 1 graph integration test (scripted 
 
 ## Results
 
-**Detector** (offline, `fraud_agent.detector.train`, 15k-transaction labelled stream):
+**Detector** (offline, `fraud_agent.detector.train`, 30k-transaction labelled stream):
 
 | metric | value |
 |---|---|
-| precision | 0.643 |
-| recall | 0.734 |
-| share of traffic sent to the LLM | 1.6% |
-| recall: account takeover / mule chain / merchant collusion / velocity burst | 1.00 / 0.96 / 0.68 / 0.71 |
+| precision | 0.64 |
+| recall | 0.62 |
+| share of traffic sent to the LLM | 1.5% |
+| recall: account takeover / mule chain / merchant collusion / velocity burst | 1.00 / 1.00 / 0.39 / 0.75 |
 
-**Agent** (`evals.run_evals --limit 10`: 10 cases covering all four fraud patterns plus false-positive
-flags; Opus 5.5 investigator/reporter, Haiku 5.5 triage and judge; prompt v1):
+**Agent** (`evals.run_evals --limit 10`: the same 10 cases in every run, covering all four fraud
+patterns plus false-positive flags; Opus 5.5 investigator/reporter, Haiku 5.5 triage and judge):
 
-| metric | value |
-|---|---|
-| F1 (fraud vs. legitimate) | 0.94 (precision 0.89, recall 1.00) |
-| fraud pattern accuracy | 0.88 (7 of 8) |
-| false-action rate (freeze/block on a legitimate customer) | 0.00 |
-| ungrounded claim rate | 0.00 |
-| LLM judge: faithfulness / actionability (1-5) | 4.6 / 4.2 |
-| avg tool calls per case | 9.5 |
-| avg cost per case | $0.23 |
-| latency p50 / p95 | 49 s / 52 s |
+| metric | v1 | v2: reporter fix | v2 + realistic data |
+|---|---|---|---|
+| F1 (fraud vs. legitimate) | 0.94 | 0.94 | **1.00** |
+| fraud pattern accuracy | 7/8 | 7/8 | 7/8 |
+| false-action rate (freeze/block on a legitimate customer) | 0.00 | 0.00 | 0.00 |
+| legitimate customers cleared with no action | 0/2 | 1/2 | **2/2** |
+| ungrounded claim rate | 0.00 | 0.00 | 0.00 |
+| LLM judge: faithfulness / actionability (1-5) | 4.6 / 4.2 | 4.3 / 4.7 | 4.4 / 4.4 |
+| avg tool calls per case | 9.5 | 9.7 | 10.0 |
+| avg cost per case | $0.23 | $0.24 | **$0.19** |
+| latency p50 / p95 | 49 s / 52 s | 53 s / 60 s | 52 s / 71 s |
 
-Error analysis of the two misses:
-- A legitimate large payment was rated "suspicious" (action: monitor, so no customer impact). The
-  investigator had concluded "legitimate", but the reporter overrode it without new evidence.
-- The first hop of a mule chain was labelled "account takeover". From the victim's side, that
-  transfer has the same signals (new device, new city, very large amount); the agent still traced
-  the onward hops and recommended the correct freeze.
+What changed between runs:
+- **v1 → v2 (prompt):** the reporter sometimes re-judged the case and overrode the investigator's
+  "legitimate" verdict. The reporter prompt now treats the investigator's findings note as the
+  decision, and allows a change only when a specific tool result contradicts it, citing that result.
+- **v2 → realistic data:** in v2 the reporter's one change was a *correct* catch. The synthetic data
+  packed all 20k transactions into 9.5 hours (about 5 payments per customer per hour), so normal
+  customers looked like velocity bursts. The generator now spaces normal payments about a minute
+  apart: 20k transactions cover two weeks at about 3 payments per customer per day.
+
+Remaining miss: the first hop of a mule chain is labelled "account takeover". From the victim's side
+that transfer has the same signals (new device, new city, very large amount); the agent still traces
+the onward hops and recommends the correct freeze.
 
 ## Project layout
 
