@@ -25,13 +25,19 @@ console = Console()
 
 def event_stream(world: World, seed: int = 7, fraud_rate: float = 0.002,
                  start: datetime | None = None) -> Iterator[Transaction]:
-    """Infinite, event-time-ordered stream of normal traffic with fraud patterns mixed in."""
+    """Infinite, event-time-ordered stream of normal traffic with fraud patterns mixed in.
+
+    Normal payments arrive about a minute apart in event time, which gives each of the ~400
+    customers a realistic few payments per day (20k transactions ~ two weeks of history).
+    Fraud patterns keep their own seconds-to-minutes timing, so bursts stand out against that.
+    When producing live, event time runs faster than wall-clock time (an accelerated replay).
+    """
     rng = random.Random(seed)
     clock = start or datetime.now(UTC)
     pending: list[tuple[datetime, int, Transaction]] = []
     tie = count()
     while True:
-        clock += timedelta(seconds=rng.uniform(0.5, 3))
+        clock += timedelta(seconds=rng.uniform(20, 100))
         heapq.heappush(pending, (clock, next(tie), normal_txn(world, rng, clock)))
         if rng.random() < fraud_rate:
             pattern = rng.choice(list(FRAUD_PATTERNS.values()))
