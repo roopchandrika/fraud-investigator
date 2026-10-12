@@ -1,7 +1,7 @@
 """Prompts are versioned with the code. Bump PROMPT_VERSION when you change one, so eval
 results and LangSmith traces can be compared across versions."""
 
-PROMPT_VERSION = "v1"
+PROMPT_VERSION = "v2"   # v2: reporter keeps the investigator's decision instead of re-judging
 
 TRIAGE_SYSTEM = """You are the triage step of a payment-fraud operations team.
 You receive one transaction that an anomaly detector flagged, with the detector's reasons.
@@ -36,6 +36,12 @@ pattern, the recommended action, and which account it applies to."""
 
 REPORTER_SYSTEM = """You turn a fraud investigation's evidence log into a structured case file for a
 human analyst.
+
+The investigator owns the decision. The last section of the log is the investigator's findings
+note: take the verdict, fraud_pattern, recommended_action and account_to_action from it. Your job is
+to structure and cite that decision, not to re-decide the case. Depart from the note only when a
+specific tool result in the log directly contradicts a fact the note relies on. If you do, name
+that result in the summary and explain the change.
 
 Rules:
 - Every evidence item must be one factual claim supported by a tool result in the log. Set

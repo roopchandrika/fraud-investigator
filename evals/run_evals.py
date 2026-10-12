@@ -11,7 +11,7 @@ import time
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
-from langchain_core.messages import HumanMessage, SystemMessage
+from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 from rich.console import Console
 from rich.table import Table
 
@@ -53,6 +53,9 @@ def run_case(graph, case: dict, run_id: str, use_cache: bool) -> dict:
         "grounding": state.get("grounding", {}), "cache_hit": state.get("cache_hit", False),
         "tool_calls": sum(len(getattr(m, "tool_calls", []) or []) for m in state.get("messages", [])),
         "judge": score.model_dump() if score else None,
+        # Kept so reporter-vs-investigator disagreements can be audited
+        "investigator_note": next((m.text for m in reversed(state.get("messages", []))
+                                   if isinstance(m, AIMessage) and not m.tool_calls), None),
         "agent_cost_usd": total_cost(state), "judge_cost_usd": judge_usage["cost_usd"],
         "latency_s": round(time.time() - t0, 2),
     }
