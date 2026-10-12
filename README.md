@@ -153,17 +153,17 @@ uv run pytest -q    # 8 offline unit tests + 1 graph integration test (scripted 
 **Agent** (`evals.run_evals --limit 10`: the same 10 cases in every run, covering all four fraud
 patterns plus false-positive flags; Opus 5.5 investigator/reporter, Haiku 5.5 triage and judge):
 
-| metric | v1 | v2: reporter fix | v2 + realistic data |
-|---|---|---|---|
-| F1 (fraud vs. legitimate) | 0.94 | 0.94 | **1.00** |
-| fraud pattern accuracy | 7/8 | 7/8 | 7/8 |
-| false-action rate (freeze/block on a legitimate customer) | 0.00 | 0.00 | 0.00 |
-| legitimate customers cleared with no action | 0/2 | 1/2 | **2/2** |
-| ungrounded claim rate | 0.00 | 0.00 | 0.00 |
-| LLM judge: faithfulness / actionability (1-5) | 4.6 / 4.2 | 4.3 / 4.7 | 4.4 / 4.4 |
-| avg tool calls per case | 9.5 | 9.7 | 10.0 |
-| avg cost per case | $0.23 | $0.24 | **$0.19** |
-| latency p50 / p95 | 49 s / 52 s | 53 s / 60 s | 52 s / 71 s |
+| metric | v1 | v2: reporter fix | v2 + realistic data | v3: pattern definitions |
+|---|---|---|---|---|
+| F1 (fraud vs. legitimate) | 0.94 | 0.94 | 1.00 | **1.00** |
+| fraud pattern accuracy | 7/8 | 7/8 | 7/8 | **8/8** |
+| false-action rate (freeze/block on a legitimate customer) | 0.00 | 0.00 | 0.00 | 0.00 |
+| legitimate customers cleared with no action | 0/2 | 1/2 | 2/2 | **2/2** |
+| ungrounded claim rate | 0.00 | 0.00 | 0.00 | 0.00 |
+| LLM judge: faithfulness / actionability (1-5) | 4.6 / 4.2 | 4.3 / 4.7 | 4.4 / 4.4 | 4.3 / 4.9 |
+| avg tool calls per case | 9.5 | 9.7 | 10.0 | **8.9** |
+| avg cost per case | $0.23 | $0.24 | $0.19 | **$0.16** |
+| latency p50 / p95 | 49 s / 52 s | 53 s / 60 s | 52 s / 71 s | **44 s / 51 s** |
 
 What changed between runs:
 - **v1 → v2 (prompt):** the reporter sometimes re-judged the case and overrode the investigator's
@@ -173,10 +173,15 @@ What changed between runs:
   packed all 20k transactions into 9.5 hours (about 5 payments per customer per hour), so normal
   customers looked like velocity bursts. The generator now spaces normal payments about a minute
   apart: 20k transactions cover two weeks at about 3 payments per customer per day.
+- **v3 (prompt):** the first hop of a mule chain was labelled "account takeover", because from the
+  victim's side it has the same signals (new device, new city, very large amount). The investigator
+  prompt now defines each pattern by the scheme rather than the first transaction: if the funds are
+  forwarded onward, it is a mule chain. It also traces the money before naming a pattern whenever
+  funds go to a person. Real takeovers, where the funds stay put, are still labelled correctly. The
+  clearer definitions also cut tool calls, cost and latency.
 
-Remaining miss: the first hop of a mule chain is labelled "account takeover". From the victim's side
-that transfer has the same signals (new device, new city, very large amount); the agent still traces
-the onward hops and recommends the correct freeze.
+These are single runs on a 10-case sample, so small differences (such as the judge scores) are
+within run-to-run noise.
 
 ## Project layout
 
