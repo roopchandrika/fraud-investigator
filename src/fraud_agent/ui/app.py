@@ -40,7 +40,7 @@ with review_tab:
             st.write(cf["summary"])
             st.caption(f"confidence {cf['confidence']:.2f} · cost ${c['cost_usd']} · "
                        f"{c['latency_s']}s · playbook: {', '.join(cf['playbook_refs']) or '-'}")
-            st.dataframe(pd.DataFrame(cf["evidence"]), use_container_width=True, hide_index=True)
+            st.dataframe(pd.DataFrame(cf["evidence"]), width="stretch", hide_index=True)
             note = st.text_input("Reviewer note", key=f"note-{c['case_id']}")
             a, r, _ = st.columns([1, 1, 6])
             for col, approved, label in ((a, True, "Approve"), (r, False, "Reject")):
@@ -51,4 +51,4 @@ with review_tab:
 
 with all_tab:
     rows = httpx.get(f"{API}/cases", params={"limit": 500}).json()
-    st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
+    st.dataframe(pd.DataFrame(rows), width="stretch", hide_index=True)
