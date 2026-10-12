@@ -2,6 +2,8 @@
 from langchain_anthropic import ChatAnthropic
 from langchain_core.messages import AIMessage
 
+from fraud_agent.config import get_settings
+
 # USD per 1M tokens (input, output). Keep in sync with https://www.anthropic.com/pricing
 PRICES = {
     "claude-opus-5-5": (4.00, 20.00),
@@ -22,6 +24,8 @@ def chat(model: str, max_tokens: int = 16000, effort: str | None = None) -> Chat
         kwargs["model_kwargs"] = {"fallbacks": "default"}
     if effort:
         kwargs["output_config"] = {"effort": effort}
+    if api_key := get_settings().anthropic_api_key:
+        kwargs["api_key"] = api_key
     return ChatAnthropic(model=model, max_tokens=max_tokens, max_retries=3, **kwargs)
 
 

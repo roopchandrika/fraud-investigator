@@ -1,6 +1,11 @@
 from functools import lru_cache
 
+from dotenv import load_dotenv
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+# Export .env into os.environ too: libraries such as LangChain and LangSmith read their keys
+# (ANTHROPIC_API_KEY, LANGSMITH_*) from the process environment, not from Settings.
+load_dotenv(override=False)
 
 
 class Settings(BaseSettings):
